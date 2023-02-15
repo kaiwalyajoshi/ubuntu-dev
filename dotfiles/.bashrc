@@ -128,6 +128,10 @@ export PATH=${IR}/.local/tools:${PATH}
 export TAG_OWNER=$(whoami)
 export TAG_EXPIRATION=24h
 
+export USE_KIND_CLUSTERS=true
+export INSIGHTS_NAMESPACE=kommander
+export SKIP_AWS_CREDENTIALS=true
+
 export GITHUB_TOKEN=<github token>
 export DOCKER_USERNAME=<docker user>
 export DOCKER_PASSWORD="<docker password>"
