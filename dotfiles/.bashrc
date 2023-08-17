@@ -118,11 +118,35 @@ fi
 
 export GOPATH="$HOME/go"
 export IR=${GOPATH}/src/github.com/mesosphere/dkp-insights
+export RP=${GOPATH}/src/github.com/mesosphere/dkp-insights-replay
 
-export PATH=$PATH:/usr/local/go/bin:${IR}/.local/tools:${IR}/.local/tools/golang/bin:${IR}/.local/tools/go/bin:${GOPATH}/bin
+export BACKEND_KUBECONFIG=${IR}/artifacts/backend.kubeconfig
+export MANAGEMENT_KUBECONFIG=${IR}/artifacts/management.kubeconfig
 
-# dkp-insights variables
+alias b_k="KUBECONFIG=${BACKEND_KUBECONFIG} kubectl"
+alias m_k="KUBECONFIG=${MANAGEMENT_KUBECONFIG} kubectl"
+
+alias b_k9s="KUBECONFIG=${BACKEND_KUBECONFIG} k9s"
+alias m_k9s="KUBECONFIG=${MANAGEMENT_KUBECONFIG} k9s"
+
+alias m_dkp="KUBECONFIG=${MANAGEMENT_KUBECONFIG} dkp"
+alias b_dkp="KUBECONFIG=${BACKEND_KUBECONFIG} dkp"
+
+export PATH=/usr/local/go/bin:${PATH}
 export PATH=${IR}/.local/tools:${PATH}
+export PATH=${IR}/.local/tools/golang/bin:${PATH}
+export PATH=${IR}/.local/tools/go/bin:${PATH}
+export PATH=${GOPATH}/bin:${PATH}
+
+
+# Code Reviews.
+mkdir -p ${HOME}/code-reviews
+export CR=${HOME}/code-reviews/dkp-insights
+
+# Pull Requests.
+mkdir -p ${HOME}/repositories
+export PR=${HOME}/repositories/dkp-insights
+
 
 # dkp-insights variables (optionals)
 export TAG_OWNER=$(whoami)

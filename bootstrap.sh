@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euox pipefail
 
-export BACKEND_KUBECONFIG=${IR}/artifacts/backend.kubeconfig
-export MANAGEMENT_KUBECONFIG=${IR}/artifacts/management.kubeconfig
 export USE_KIND_CLUSTERS=true
 export INSIGHTS_NAMESPACE=kommander
 export SKIP_AWS_CREDENTIALS=true
