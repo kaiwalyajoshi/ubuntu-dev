@@ -119,7 +119,7 @@ fi
 export GOPATH="$HOME/go"
 export IR=${GOPATH}/src/github.com/mesosphere/dkp-insights
 
-export PATH=$PATH:/usr/local/go/bin:${IR}/.local/tools:${IR}/.local/tools/golang/bin:${IR}/.local/tools/go/bin
+export PATH=$PATH:/usr/local/go/bin:${IR}/.local/tools:${IR}/.local/tools/golang/bin:${IR}/.local/tools/go/bin:${GOPATH}/bin
 
 # dkp-insights variables
 export PATH=${IR}/.local/tools:${PATH}

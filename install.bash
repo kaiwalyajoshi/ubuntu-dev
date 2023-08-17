@@ -50,7 +50,7 @@ mv ./kubectl /usr/local/bin/kubectl
 curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v0.3.14/clusterctl-linux-amd64 -o clusterctl
 chmod +x ./clusterctl
 mv ./clusterctl /usr/local/bin/clusterctl
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.17.0/kind-linux-amd64
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 
