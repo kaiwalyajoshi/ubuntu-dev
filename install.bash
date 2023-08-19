@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Software or configuration to be installed as root user.
+
 set -euo pipefail
 
 apt-get update
@@ -19,8 +22,11 @@ apt-get install -y \
   sysstat \
   strace \
   xdg-utils \
-  jq
-
+  jq \
+  fzf \
+  silversearcher-ag \
+  tig \
+  vim-gtk3
 
 # Docker
 apt-get install -y \
@@ -43,10 +49,10 @@ apt-get install -y \
 
 usermod -aG docker ubuntu
 
-# # k8s
-# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-# chmod +x ./kubectl
-# mv ./kubectl /usr/local/bin/kubectl
+# k8s
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ./kubectl
+mv ./kubectl /usr/local/bin/kubectl
 # curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v0.3.14/clusterctl-linux-amd64 -o clusterctl
 # chmod +x ./clusterctl
 # mv ./clusterctl /usr/local/bin/clusterctl
@@ -58,6 +64,11 @@ usermod -aG docker ubuntu
 wget https://dl.google.com/go/go1.20.7.linux-amd64.tar.gz
 sudo tar -C /usr/local/ -xzf go1.20.7.linux-amd64.tar.gz
 rm go1.20.7.linux-amd64.tar.gz
+
+# Delta Pager for Git Diffs
+wget https://github.com/dandavison/delta/releases/download/0.16.5/git-delta-musl_0.16.5_amd64.deb
+sudo dpkg -i git-delta-musl_0.16.5_amd64.deb
+rm git-delta-musl_0.16.5_amd64.deb
 
 # # Helm
 # curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -83,3 +94,23 @@ chown -R ubuntu:ubuntu go
 # Fix pod errors due to “too many open files” (https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files)
 sysctl fs.inotify.max_user_watches=524288
 sysctl fs.inotify.max_user_instances=512
+
+# NOTE: Add these to your local ~/.ssh/config, for this to work.
+# Host ec2-*us-west-2.compute.amazonaws.com
+#   SendEnv GIT_NAME
+#   SendEnv GIT_EMAIL
+#   SendEnv GIT_SIGNING_KEY
+#   SendEnv GITHUB_USERNAME
+#   SendEnv GITHUB_TOKEN
+#   SendEnv DOCKER_USERNAME
+#   SendEnv DOCKER_PASSWORD
+echo "AcceptEnv GIT_NAME" >> /etc/ssh/sshd_config
+echo "AcceptEnv GIT_EMAIL" >> /etc/ssh/sshd_config
+echo "AcceptEnv GIT_SIGNING_KEY" >> /etc/ssh/sshd_config
+echo "AcceptEnv GITHUB_USERNAME" >> /etc/ssh/sshd_config
+echo "AcceptEnv GITHUB_TOKEN" >> /etc/ssh/sshd_config
+echo "AcceptEnv DOCKER_USERNAME" >> /etc/ssh/sshd_config
+echo "AcceptEnv DOCKER_PASSWORD" >> /etc/ssh/sshd_config
+
+# Restart ssh service
+systemctl restart sshd.service

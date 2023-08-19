@@ -2,11 +2,28 @@
 
 ## Prerequisites 
 
+### Create the following env-vars in your environment
+- `GIT_NAME`: User name on git used for commits.
+- `GIT_EMAIL`: Email associated with git commits.
+- `GIT_SIGNING_KEY`: Signing Key to use with git commits. GitHub lets you use [SSH *Public Keys*](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification#ssh-commit-signature-verification). So something like `export GIT_SIGNING_KEY=$(cat ~/.ssh/id_rsa.pub)` can be used.
+- `GITHUB_USERNAME`: Github username.
+- `GITHUB_TOKEN`: Github token.
+- `DOCKER_USERNAME`: Docker user.
+- `DOCKER_PASSWORD`: Docker password.
+### Configure SSH
+Add the following to `~/.ssh/config` based on the above env-vars, add/remove as necessary.
+```
+Host ec2-*us-west-2.compute.amazonaws.com
+  ForwardAgent yes
+  SendEnv GIT_NAME
+  SendEnv GIT_EMAIL
+  SendEnv GIT_SIGNING_KEY
+  SendEnv GITHUB_USERNAME
+  SendEnv GITHUB_TOKEN
+  SendEnv DOCKER_USERNAME
+  SendEnv DOCKER_PASSWORD
+```
 - Terraform v0.13.7. Use [tfenv](https://github.com/tfutils/tfenv) for installation. If you're working with an M1 Mac laptop, try installing Terraform v1.0.11.
-- rsync
-- fswatch
-- Set the `login` and `password` in the [.netrc](dotfiles/.netrc) file with your Github user and token
-- Set the `GITHUB_TOKEN`, `DOCKER_USERNAME` and `DOCKER_PASSWORD` in the [.bashrc](dotfiles/.bashrc) file
 
 ## Creation
 Edit the `terraform.tfvars` file and adjust owner, instance_type and iam_instance_profile values.

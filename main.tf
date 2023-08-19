@@ -1,8 +1,8 @@
 resource "random_pet" "name" {}
 
 locals {
-  machine_name = "${var.owner}-${random_pet.name.id}-dev-machine"
-  generated_key_name = "${var.owner}-${random_pet.name.id}-dev-key-pair"
+  machine_name = "dkp-insights-${var.owner}-${random_pet.name.id}-dev-machine"
+  generated_key_name = "dkp-insights-${var.owner}-${random_pet.name.id}-dev-key-pair"
 }
 
 resource "aws_instance" "ubuntu-dev-machine" {
@@ -70,11 +70,39 @@ resource "aws_instance" "ubuntu-dev-machine" {
       timeout = "2m"
     }
   }
+  provisioner "file" {
+    source      = "install-user.bash"
+    destination = "/home/ubuntu/install-user.bash"
 
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = false
+      host = self.public_dns
+      private_key = tls_private_key.dev_key.private_key_pem
+      timeout = "2m"
+    }
+  }
+
+#This does not need write permisions
+  provisioner "file" {
+    source      = "user-profile.bash"
+    destination = "/home/ubuntu/user-profile.bash"
+
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = false
+      host = self.public_dns
+      private_key = tls_private_key.dev_key.private_key_pem
+      timeout = "2m"
+    }
+  }
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/ubuntu/install.bash /home/ubuntu/bootstrap.sh",
-      "sudo /home/ubuntu/install.bash"
+      "chmod +x /home/ubuntu/install.bash /home/ubuntu/install-user.bash /home/ubuntu/bootstrap.sh ",
+      "sudo /home/ubuntu/install.bash",
+      "/home/ubuntu/install-user.bash",
     ]
 
     connection {
@@ -87,7 +115,6 @@ resource "aws_instance" "ubuntu-dev-machine" {
     }
   }
 }
-
 
 ### Second Drive
 # resource "aws_ebs_volume" "ubuntu-dev-machine-volume" {

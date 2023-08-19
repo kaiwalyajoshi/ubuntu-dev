@@ -1,4 +1,8 @@
+.DEFAULT_GOAL := help
+
 TARGET_REPO := $(GOPATH)/src/github.com/mesosphere/dkp-insights
+MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
+
 TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
 EC2_INSTANCE_USER := ubuntu
 
@@ -14,50 +18,67 @@ SSH_TUNNEL_PORT := 1337
 
 PORT_FORWARD ?= 8888
 
-# Start one-way synchronization of the $(TARGET_REPO) to the remote host
+.PHONY: help
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sort
+
+define print-target
+		@printf "Executing target: \033[36m$@\033[0m\n"
+endef
+
 .PHONY: sync-repo
+sync-repo: ## Start one-way synchronization of the $(TARGET_REPO) to the remote host
 sync-repo:
+	$(call print-target)
 	# Perform initial sync
 	rsync $(RSYNC_OPTS)
 	# Watch for changes and sync
 	fswatch --one-per-batch --recursive --latency 1 $(TARGET_REPO) | xargs -I{} rsync $(RSYNC_OPTS)
 
-# Create SSH tunnel to the remote instance
 .PHONY: tunnel
+tunnel: ## Create SSH tunnel to the remote instance
 tunnel:
+	$(call print-target)
 	ssh $(SSH_OPTS) -D $(SSH_TUNNEL_PORT) -f -C -q -N $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST)
 
 .PHONY: dashboard
+dashboard: ## Load kommander dashboard
 dashboard: tunnel
 dashboard:
+	$(call print-target)
 	@echo Obtaining DKP credentials...
-	@ssh $(SSH_OPTS) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST) "kubectl -n kommander get secret dkp-credentials \
-		-o go-template='{{ \"\n\"}}Username: {{.data.username|base64decode}}{{ \"\n\"}}Password: {{.data.password|base64decode}}{{ \"\n\"}}'"
+	@ssh $(SSH_OPTS) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST) "KUBECONFIG=$(MANAGEMENT_KUBECONFIG) kubectl -n kommander get secret dkp-credentials -o go-template='{{ \"\n\"}}Username: {{.data.username|base64decode}}{{ \"\n\"}}Password: {{.data.password|base64decode}}{{ \"\n\"}}'"
 	@echo "---------------------------------------------------"
 	@echo Launching Kommander Dashboard...
-	@open $(shell ssh $(SSH_OPTS) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST) "kubectl -n kommander get svc kommander-traefik \
-		-o go-template='https://{{with index .status.loadBalancer.ingress 0}}{{or .hostname .ip}}{{end}}/dkp/kommander/dashboard{{ \"\n\"}}'")
+	@xdg-open $(shell ssh $(SSH_OPTS) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST) "KUBECONFIG=$(MANAGEMENT_KUBECONFIG) kubectl -n kommander get kommanderclusters host-cluster -o go-template='https://{{.status.ingress.address}}/dkp/kommander/dashboard'")
 
-# Connect to the remote instance
 .PHONY: connect
+connect: ## Connect to the remote instance
 connect:
+	$(call print-target)
 	ssh $(SSH_OPTS) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST)
 
-# Create an EC2 instance with Terraform
 .PHONY: create
+create: ## Create an EC2 instance with Terraform
 create:
+	$(call print-target)
 	terraform init
 	terraform apply $(TERRAFORM_OPTS)
 
-# Destroy an EC2 instance
 .PHONY: destroy
+destroy: ## Destroy an EC2 instance
 destroy:
+	$(call print-target)
 	terraform destroy $(TERRAFORM_OPTS)
 
 .PHONY: clean
+clean: ## Delete all Terraform State and SSH Keys.
 clean:
+	$(call print-target)
 	rm -rf .terraform* *.pem terraform.tfstate*
 
 .PHONY: port-forward
+port-forward: ## Port-forward ports from the EC2 Instance
 port-forward:
+	$(call print-target)
 	ssh $(SSH_OPTS) -N -L $(PORT_FORWARD):localhost:$(PORT_FORWARD) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST)
