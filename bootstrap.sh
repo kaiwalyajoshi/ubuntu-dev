@@ -6,6 +6,10 @@ export INSIGHTS_NAMESPACE=kommander
 export SKIP_AWS_CREDENTIALS=true
 
 cd "${IR}"
+
+# Renew docker credentials
+make configure-docker-credentials
+
 # Create Kind cluster
 ./hack/create-environments/create-environments.sh create-management-cluster
 
