@@ -7,6 +7,11 @@ export SKIP_AWS_CREDENTIALS=true
 
 cd "${IR}"
 
+# Install dependencies 
+make install-kind
+make install-kubectl
+make install-helm
+
 # Renew docker credentials
 make configure-docker-credentials
 
