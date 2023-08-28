@@ -1,4 +1,5 @@
-.DEFAULT_GOAL := help
+.ONESHELL:
+.lDEFAULT_GOAL := help
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
 TARGET_REPO := $(GOPATH)/src/github.com/mesosphere/dkp-insights
@@ -65,6 +66,7 @@ create:
 	$(call print-target)
 	terraform init
 	terraform apply $(TERRAFORM_OPTS)
+	make -C $(ROOT_DIR) populate-ssh-config
 
 .PHONY: destroy
 destroy: ## Destroy an EC2 instance
@@ -76,11 +78,27 @@ destroy:
 clean: ## Delete all Terraform State and SSH Keys.
 clean:
 	$(call print-target)
-	rm -rf .terraform* *.pem terraform.tfstate*
+	rm -rf .terraform* *.pem terraform.tfstate* ssh-config
 
 .PHONY: port-forward
 port-forward: ## Port-forward ports from the EC2 Instance
 port-forward:
 	$(call print-target)
 	ssh $(SSH_OPTS) -N -L $(PORT_FORWARD):localhost:$(PORT_FORWARD) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST)
+
+.PHONY: populate-ssh-config
+populate-ssh-config:
+populate-ssh-config: ## Generate and populate a ssh config in the current folder. (See README)
+	$(call print-target)
+	cat << EOF >$(ROOT_DIR)/ssh-config
+	Host insights-dev-box
+		HostName $(EC2_INSTANCE_HOST)
+		IdentityFile $(ROOT_DIR)/$(EC2_SSH_KEY)
+		IdentitiesOnly yes
+		StrictHostKeyChecking accept-new
+		ServerAliveInterval 30
+		User $(EC2_INSTANCE_USER)
+	EOF
+	echo "Ensure the following is added to ~/.ssh/config:Include $(ROOT_DIR)/ssh-config"
+
 

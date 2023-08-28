@@ -13,6 +13,8 @@
 ### Configure SSH
 Add the following to `~/.ssh/config` based on the above env-vars, add/remove as necessary.
 ```
+Include <folder-where-this-repo-is-found>/ubuntu-dev/ssh-config
+
 Host ec2-*us-west-2.compute.amazonaws.com
   ForwardAgent yes
   SendEnv GIT_NAME
