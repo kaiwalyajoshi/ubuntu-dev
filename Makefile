@@ -1,5 +1,6 @@
 .DEFAULT_GOAL := help
 
+ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
 TARGET_REPO := $(GOPATH)/src/github.com/mesosphere/dkp-insights
 MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
 
@@ -11,7 +12,7 @@ EC2_INSTANCE_HOST := $(strip $(shell cat inventory | grep -E "(.*)amazonaws\.com
 EC2_SSH_KEY := $(shell cat inventory | grep -E ".*\.pem" | cut -d "=" -f 2)
 endif
 
-SSH_OPTS := -i $(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
+SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 
 RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(TARGET_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):~/go/src/github.com/mesosphere
 SSH_TUNNEL_PORT := 1337
@@ -82,3 +83,4 @@ port-forward: ## Port-forward ports from the EC2 Instance
 port-forward:
 	$(call print-target)
 	ssh $(SSH_OPTS) -N -L $(PORT_FORWARD):localhost:$(PORT_FORWARD) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST)
+
