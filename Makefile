@@ -20,6 +20,9 @@ SSH_TUNNEL_PORT := 1337
 
 PORT_FORWARD ?= 8888
 
+POSTGRES_PORT_FORWARD ?= 5432
+API_PORT_FORWARD ?= 8090
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sort
@@ -85,6 +88,18 @@ port-forward: ## Port-forward ports from the EC2 Instance
 port-forward:
 	$(call print-target)
 	ssh $(SSH_OPTS) -N -L $(PORT_FORWARD):localhost:$(PORT_FORWARD) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST)
+
+.PHONY: postgres-port-forward
+postgres-port-forward: ## Port-forward Postgres ports from the EC2 Instance
+postgres-port-forward:
+	$(call print-target)
+	ssh $(SSH_OPTS) -N -L $(POSTGRES_PORT_FORWARD):localhost:$(POSTGRES_PORT_FORWARD) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST) &
+
+.PHONY: api-port-forward
+api-port-forward: ## Port-forward API ports from the EC2 Instance
+api-port-forward:
+	$(call print-target)
+	ssh $(SSH_OPTS) -N -L $(API_PORT_FORWARD):localhost:$(API_PORT_FORWARD) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST) &
 
 .PHONY: populate-ssh-config
 populate-ssh-config:
