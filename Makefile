@@ -2,7 +2,8 @@
 .lDEFAULT_GOAL := help
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
-TARGET_REPO := $(GOPATH)/src/github.com/mesosphere/dkp-insights
+SOURCE_REPO := $(PR)
+TARGET_REPO := /home/kjoshi/repositories/dkp-insights
 MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
 
 TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
@@ -15,7 +16,7 @@ endif
 
 SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 
-RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(TARGET_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):~/go/src/github.com/mesosphere
+RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):~/go/src/github.com/mesosphere
 SSH_TUNNEL_PORT := 1337
 
 PORT_FORWARD ?= 8888
@@ -32,13 +33,13 @@ define print-target
 endef
 
 .PHONY: sync-repo
-sync-repo: ## Start one-way synchronization of the $(TARGET_REPO) to the remote host
+sync-repo: ## Start one-way synchronization of the $(SOURCE_REPO) to the remote host
 sync-repo:
 	$(call print-target)
 	# Perform initial sync
 	rsync $(RSYNC_OPTS)
 	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(TARGET_REPO) | xargs -I{} rsync $(RSYNC_OPTS)
+	fswatch --one-per-batch --recursive --latency 1 $(SOURCE_REPO) | xargs -I{} rsync $(RSYNC_OPTS)
 
 .PHONY: tunnel
 tunnel: ## Create SSH tunnel to the remote instance
