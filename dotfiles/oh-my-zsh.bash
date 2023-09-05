@@ -67,6 +67,8 @@ ZSH_THEME="agnoster"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+zstyle :omz:plugins:ssh-agent agent-forwarding on
+
 source /home/ubuntu/user-profile.bash
 
 # Which plugins would you like to load?
