@@ -17,6 +17,4 @@ deploy-cluster.sh
 
 .terraform.lock.hcl
 
-dotfiles
-
 ssh-config

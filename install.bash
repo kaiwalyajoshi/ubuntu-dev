@@ -26,7 +26,8 @@ apt-get install -y \
   fzf \
   silversearcher-ag \
   tig \
-  vim-gtk3
+  vim-gtk3 \
+  zsh
 
 # Docker
 apt-get install -y \
@@ -112,5 +113,9 @@ echo "AcceptEnv GITHUB_TOKEN" >> /etc/ssh/sshd_config
 echo "AcceptEnv DOCKER_USERNAME" >> /etc/ssh/sshd_config
 echo "AcceptEnv DOCKER_PASSWORD" >> /etc/ssh/sshd_config
 
+# Change user shell to zsh
+chsh -s /usr/bin/zsh ubuntu
+
 # Restart ssh service
 systemctl restart sshd.service
+

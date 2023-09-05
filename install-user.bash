@@ -18,8 +18,13 @@ git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
 ln -s /home/ubuntu/SpaceVim.d/.SpaceVim.d /home/ubuntu/.SpaceVim.d
 
 # Optional: Install Oh-My-Bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended
+#bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended
 #cp /home/ubuntu/oh-my-bash.bash /home/ubuntu/.bashrc
+
+# Optional: Install Oh-My-Zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+cp -f /home/ubuntu/oh-my-zsh.bash /home/ubuntu/.zshrc
+
 
 # Everything below must be run after the git clones above
 
