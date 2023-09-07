@@ -19,7 +19,7 @@ endif
 
 SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 
-RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
+RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
 SSH_TUNNEL_PORT := 1337
 
 PORT_FORWARD ?= 8888
