@@ -3,12 +3,15 @@
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
 SOURCE_REPO := $(PR)
+CODE_REVIEWS_SOURCE_REPO := ${CR}
 
 EC2_INSTANCE_USER := ubuntu
 
 TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/go/src/github.com/mesosphere
 TARGET_REPO := $(TARGET_REPO_BASE)/dkp-insights
 MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
+
+CODE_REVIEWS_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/code-reviews
 
 TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
 
@@ -21,6 +24,8 @@ SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKey
 
 RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
 SSH_TUNNEL_PORT := 1337
+
+CODE_REVIEWS_RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(CODE_REVIEWS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(CODE_REVIEWS_TARGET_REPO_BASE)
 
 PORT_FORWARD ?= 8888
 
@@ -43,6 +48,15 @@ sync-repo:
 	rsync $(RSYNC_OPTS)
 	# Watch for changes and sync
 	fswatch --one-per-batch --recursive --latency 1 $(SOURCE_REPO) | xargs -I{} rsync $(RSYNC_OPTS)
+
+.PHONY: sync-review-repo
+sync-review-repo: ## Start one-way synchronization of the $(CODE_REVIEWS_SOURCE_REPO) to the remote host
+sync-review-repo:
+	$(call print-target)
+	# Perform initial sync
+	rsync $(CODE_REVIEWS_RSYNC_OPTS)
+	# Watch for changes and sync
+	fswatch --one-per-batch --recursive --latency 1 $(CODE_REVIEWS_SOURCE_REPO) | xargs -I{} rsync $(CODE_REVIEWS_RSYNC_OPTS)
 
 .PHONY: tunnel
 tunnel: ## Create SSH tunnel to the remote instance
