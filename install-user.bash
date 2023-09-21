@@ -34,9 +34,9 @@ cat >/home/ubuntu/.gitconfig<<EOF
   editor = vim
   pager = delta
 [commit]
-  gpgSign = true
+  gpgSign = false
 [tag]
-  gpgSign = true
+  gpgSign = false
 [url "git@github.com:"]
   insteadOf = https://github.com/
 [fetch]
