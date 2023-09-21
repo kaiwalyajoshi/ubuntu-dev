@@ -27,6 +27,7 @@ apt-get install -y \
   silversearcher-ag \
   tig \
   vim-gtk3 \
+  tree \
   zsh
 
 # Docker
