@@ -25,8 +25,9 @@ ln -s /home/ubuntu/SpaceVim.d/.SpaceVim.d /home/ubuntu/.SpaceVim.d
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 cp -f /home/ubuntu/oh-my-zsh.bash /home/ubuntu/.zshrc
 
-
 # Everything below must be run after the git clones above
+
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 
 # Generate .gitconfig, modify these as needed.
 cat >/home/ubuntu/.gitconfig<<EOF
