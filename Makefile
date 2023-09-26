@@ -2,7 +2,8 @@
 .lDEFAULT_GOAL := help
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
-SOURCE_REPO := $(PR)
+SOURCE_REPO := $(IR)
+PROJECTS_SOURCE_REPO := ${PR}
 CODE_REVIEWS_SOURCE_REPO := ${CR}
 
 EC2_INSTANCE_USER := ubuntu
@@ -11,6 +12,7 @@ TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/go/src/github.com/mesosphere
 TARGET_REPO := $(TARGET_REPO_BASE)/dkp-insights
 MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
 
+PROJECTS_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/repositories
 CODE_REVIEWS_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/code-reviews
 
 TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
@@ -22,9 +24,9 @@ endif
 
 SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 
-RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
 SSH_TUNNEL_PORT := 1337
-
+RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
+PROJECTS_RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(PROJECTS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
 CODE_REVIEWS_RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(CODE_REVIEWS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(CODE_REVIEWS_TARGET_REPO_BASE)
 
 PORT_FORWARD ?= 8888
@@ -57,6 +59,15 @@ sync-review-repo:
 	rsync $(CODE_REVIEWS_RSYNC_OPTS)
 	# Watch for changes and sync
 	fswatch --one-per-batch --recursive --latency 1 $(CODE_REVIEWS_SOURCE_REPO) | xargs -I{} rsync $(CODE_REVIEWS_RSYNC_OPTS)
+
+.PHONY: sync-projects-repo
+sync-projects-repo: ## Start one-way synchronization of the $(CODE_REVIEWS_SOURCE_REPO) to the remote host
+sync-projects-repo:
+	$(call print-target)
+	# Perform initial sync
+	rsync $(PROJECTS_RSYNC_OPTS)
+	# Watch for changes and sync
+	fswatch --one-per-batch --recursive --latency 1 $(PROJECTS_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
 
 .PHONY: tunnel
 tunnel: ## Create SSH tunnel to the remote instance
