@@ -25,9 +25,10 @@ endif
 SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 
 SSH_TUNNEL_PORT := 1337
-RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
-PROJECTS_RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(PROJECTS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
-CODE_REVIEWS_RSYNC_OPTS := -rav --delete --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)" $(CODE_REVIEWS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(CODE_REVIEWS_TARGET_REPO_BASE)
+RSYNC_OPTS_COMMON := -rav --delete --exclude dkp-insights-e2e/third-party --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)"
+RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
+PROJECTS_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(PROJECTS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
+CODE_REVIEWS_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(CODE_REVIEWS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(CODE_REVIEWS_TARGET_REPO_BASE)
 
 PORT_FORWARD ?= 8888
 
