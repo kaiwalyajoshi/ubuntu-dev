@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# Add updated git to PPA
+sudo add-apt-repository ppa:git-core/ppa -y
+
 apt-get update
 
 apt-get install -y \

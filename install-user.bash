@@ -34,10 +34,12 @@ cat >/home/ubuntu/.gitconfig<<EOF
 [user]
   editor = vim
   pager = delta
+[gpg]
+  format = ssh
 [commit]
-  gpgSign = false
+  gpgSign = true
 [tag]
-  gpgSign = false
+  gpgSign = true
 [url "git@github.com:"]
   insteadOf = https://github.com/
 [fetch]
