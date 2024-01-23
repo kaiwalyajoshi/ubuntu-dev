@@ -13,10 +13,6 @@ EOF
 # Optional: Install SpaceVim
 curl -sLf https://spacevim.org/install.sh | bash
 
-# Optional: Install addtional settings for SpackeVim (kjoshi specific)
-git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
-ln -s /home/ubuntu/SpaceVim.d/.SpaceVim.d /home/ubuntu/.SpaceVim.d
-
 # Optional: Install Oh-My-Bash
 #bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended
 #cp /home/ubuntu/oh-my-bash.bash /home/ubuntu/.bashrc

@@ -83,6 +83,19 @@ resource "aws_instance" "ubuntu-dev-machine" {
       timeout = "2m"
     }
   }
+  provisioner "file" {
+    source      = "post-install-user.bash"
+    destination = "/home/ubuntu/post-install-user.bash"
+
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = false
+      host = self.public_dns
+      private_key = tls_private_key.dev_key.private_key_pem
+      timeout = "2m"
+    }
+  }
 
 #This does not need write permisions
   provisioner "file" {
@@ -100,7 +113,7 @@ resource "aws_instance" "ubuntu-dev-machine" {
   }
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/ubuntu/install.bash /home/ubuntu/install-user.bash /home/ubuntu/bootstrap.sh ",
+      "chmod +x /home/ubuntu/install.bash /home/ubuntu/install-user.bash /home/ubuntu/post-install-user.bash /home/ubuntu/bootstrap.sh",
       "sudo /home/ubuntu/install.bash",
       "/home/ubuntu/install-user.bash",
     ]

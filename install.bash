@@ -5,7 +5,9 @@
 set -euo pipefail
 
 # Add updated git to PPA
-sudo add-apt-repository ppa:git-core/ppa -y
+sudo NEEDRESTART_MODE=a add-apt-repository ppa:git-core/ppa -y
+
+export NEEDRESTART_MODE=a
 
 apt-get update
 

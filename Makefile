@@ -97,15 +97,15 @@ connect:
 create: ## Create an EC2 instance with Terraform
 create:
 	$(call print-target)
-	terraform init
-	terraform apply $(TERRAFORM_OPTS)
+	tofu init
+	tofu apply $(TERRAFORM_OPTS)
 	make -C $(ROOT_DIR) populate-ssh-config
 
 .PHONY: destroy
 destroy: ## Destroy an EC2 instance
 destroy:
 	$(call print-target)
-	terraform destroy $(TERRAFORM_OPTS)
+	tofu destroy $(TERRAFORM_OPTS)
 
 .PHONY: clean
 clean: ## Delete all Terraform State and SSH Keys.
@@ -143,6 +143,14 @@ populate-ssh-config: ## Generate and populate a ssh config in the current folder
 		StrictHostKeyChecking accept-new
 		ServerAliveInterval 30
 		User $(EC2_INSTANCE_USER)
+		ForwardAgent yes
+		SendEnv GIT_NAME
+		SendEnv GIT_EMAIL
+		SendEnv GIT_SIGNING_KEY
+		SendEnv GITHUB_USERNAME
+		SendEnv GITHUB_TOKEN
+		SendEnv DOCKER_USERNAME
+		SendEnv DOCKER_PASSWORD
 	EOF
 	echo "Ensure the following is added to ~/.ssh/config:Include $(ROOT_DIR)/ssh-config"
 
