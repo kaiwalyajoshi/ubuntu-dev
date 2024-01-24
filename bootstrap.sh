@@ -11,6 +11,7 @@ cd "${IR}"
 make install-kind
 make install-kubectl
 make install-helm
+make install-aws-cli
 
 # Renew docker credentials
 make configure-docker-credentials
