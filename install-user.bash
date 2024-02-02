@@ -5,7 +5,7 @@ set -euo pipefail
 
 # Must be run before git clones below.
 # Add saner defaults for github.com based repos.
-cat >/home/ubuntu/.ssh/config<<EOF
+cat >/home/kjoshi/.ssh/config<<EOF
 Host github.com
      StrictHostKeyChecking accept-new
 EOF
@@ -15,18 +15,18 @@ curl -sLf https://spacevim.org/install.sh | bash
 
 # Optional: Install Oh-My-Bash
 #bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended
-#cp /home/ubuntu/oh-my-bash.bash /home/ubuntu/.bashrc
+#cp /home/kjoshi/oh-my-bash.bash /home/kjoshi/.bashrc
 
 # Optional: Install Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-cp -f /home/ubuntu/oh-my-zsh.bash /home/ubuntu/.zshrc
+cp -f /home/kjoshi/oh-my-zsh.bash /home/kjoshi/.zshrc
 
 # Everything below must be run after the git clones above
 
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 
 # Generate .gitconfig, modify these as needed.
-cat >/home/ubuntu/.gitconfig<<EOF
+cat >/home/kjoshi/.gitconfig<<EOF
 [user]
   editor = vim
   pager = delta
@@ -63,7 +63,7 @@ cat >/home/ubuntu/.gitconfig<<EOF
 EOF
 
 # Generate .tigrc, modify these as needed.
-cat >/home/ubuntu/.tigrc<<EOF
+cat >/home/kjoshi/.tigrc<<EOF
 # tig settings
 set main-view-date = custom
 set main-view-date-format = "%Y-%m-%d"

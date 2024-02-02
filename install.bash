@@ -2,14 +2,11 @@
 
 # Software or configuration to be installed as root user.
 
-set -euo pipefail
-
-# Add updated git to PPA
-sudo NEEDRESTART_MODE=a add-apt-repository ppa:git-core/ppa -y
-
-export NEEDRESTART_MODE=a
+set -euox pipefail
 
 apt-get update
+
+apt-get install software-properties-common -y
 
 apt-get install -y \
   curl \
@@ -42,24 +39,30 @@ apt-get install -y \
     gnupg \
     lsb-release
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
+# Install Docker
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+# Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update
+
 apt-get install -y \
   docker-ce \
   docker-ce-cli \
-  containerd.io
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin
 
-usermod -aG docker ubuntu
+usermod -aG docker kjoshi
 
 # k8s
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x ./kubectl
-mv ./kubectl /usr/local/bin/kubectl
+# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+# chmod +x ./kubectl
+# mv ./kubectl /usr/local/bin/kubectl
 # curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v0.3.14/clusterctl-linux-amd64 -o clusterctl
 # chmod +x ./clusterctl
 # mv ./clusterctl /usr/local/bin/clusterctl
@@ -68,9 +71,9 @@ mv ./kubectl /usr/local/bin/kubectl
 # sudo mv ./kind /usr/local/bin/kind
 
 # GoLang
-wget https://dl.google.com/go/go1.20.7.linux-amd64.tar.gz
-sudo tar -C /usr/local/ -xzf go1.20.7.linux-amd64.tar.gz
-rm go1.20.7.linux-amd64.tar.gz
+# wget https://dl.google.com/go/go1.20.7.linux-amd64.tar.gz
+# sudo tar -C /usr/local/ -xzf go1.20.7.linux-amd64.tar.gz
+# rm go1.20.7.linux-amd64.tar.gz
 
 # Delta Pager for Git Diffs
 wget https://github.com/dandavison/delta/releases/download/0.16.5/git-delta-musl_0.16.5_amd64.deb
@@ -95,14 +98,14 @@ tar xf k9s_Linux_x86_64.tar.gz
 mv k9s /usr/local/bin
 rm k9s_Linux_x86_64.tar.gz
 
-mkdir -p /home/ubuntu/go/src/github.com/mesosphere
-chown -R ubuntu:ubuntu go
+mkdir -p /home/kjoshi/go/src/github.com/mesosphere
+chown -R kjoshi:kjoshi /home/kjoshi/go
 
-mkdir -p /home/ubuntu/code-reviews
-chown -R ubuntu:ubuntu code-reviews
+mkdir -p /home/kjoshi/code-reviews
+chown -R kjoshi:kjoshi /home/kjoshi/code-reviews
 
-mkdir -p /home/ubuntu/repositories
-chown -R ubuntu:ubuntu repositories
+mkdir -p /home/kjoshi/repositories
+chown -R kjoshi:kjoshi /home/kjoshi/repositories
 
 # Fix pod errors due to “too many open files” (https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files)
 sysctl fs.inotify.max_user_watches=524288
@@ -126,7 +129,7 @@ echo "AcceptEnv DOCKER_USERNAME" >> /etc/ssh/sshd_config
 echo "AcceptEnv DOCKER_PASSWORD" >> /etc/ssh/sshd_config
 
 # Change user shell to zsh
-chsh -s /usr/bin/zsh ubuntu
+chsh -s /usr/bin/zsh kjoshi
 
 # Restart ssh service
 systemctl restart sshd.service

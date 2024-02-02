@@ -6,5 +6,5 @@ set -euo pipefail
 
 # Optional: Install addtional settings for SpackeVim (kjoshi specific)
 git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
-ln -s /home/ubuntu/SpaceVim.d/.SpaceVim.d /home/ubuntu/.SpaceVim.d
+ln -s /home/kjoshi/SpaceVim.d/.SpaceVim.d /home/kjoshi/.SpaceVim.d
 
