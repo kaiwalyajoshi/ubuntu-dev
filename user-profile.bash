@@ -56,3 +56,4 @@ export SKIP_AWS_CREDENTIALS=true
 git config --global user.name "${GIT_NAME}"
 git config --global user.email "${GIT_EMAIL}"
 git config --global user.signingkey "${GIT_SIGNING_KEY}"
+

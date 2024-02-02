@@ -12,6 +12,9 @@ make install-kind
 make install-kubectl
 make install-helm
 make install-aws-cli
+make install-maws
+
+maws config set url https://aws.production.d2iq.cloud
 
 # Renew docker credentials
 make configure-docker-credentials
