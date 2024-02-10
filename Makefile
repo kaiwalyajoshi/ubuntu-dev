@@ -6,6 +6,8 @@ SOURCE_REPO := $(IR)
 PROJECTS_SOURCE_REPO := ${PR}
 CODE_REVIEWS_SOURCE_REPO := ${CR}
 AI_NAVIGATOR_SOURCE_REPO := ${HOME}/repositories/ai-navigator-cluster-info-agent
+KIB_SOURCE_REPO := ${HOME}/repositories/konvoy-image-builder
+CAPPP_SOURCE_REPO := ${HOME}/repositories/cluster-api-provider-preprovisioned
 
 EC2_INSTANCE_USER := ubuntu
 
@@ -31,6 +33,8 @@ RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INS
 PROJECTS_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(PROJECTS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
 CODE_REVIEWS_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(CODE_REVIEWS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(CODE_REVIEWS_TARGET_REPO_BASE)
 AI_NAVIGATOR_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(AI_NAVIGATOR_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
+KIB_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(KIB_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
+CAPPP_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(CAPPP_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
 
 PORT_FORWARD ?= 8888
 
@@ -80,6 +84,24 @@ sync-ai-navigator-repo:
 	rsync $(AI_NAVIGATOR_RSYNC_OPTS)
 	# Watch for changes and sync
 	fswatch --one-per-batch --recursive --latency 1 $(AI_NAVIGATOR_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
+
+.PHONY: sync-kib-repo
+sync-kib-repo: ## Start one-way synchronization of the $(KIB_SOURCE_REPO) to the remote host
+sync-kib-repo:
+	$(call print-target)
+	# Perform initial sync
+	rsync $(KIB_RSYNC_OPTS)
+	# Watch for changes and sync
+	fswatch --one-per-batch --recursive --latency 1 $(KIB_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
+
+.PHONY: sync-cappp-repo
+sync-cappp-repo: ## Start one-way synchronization of the $(CAPPP_SOURCE_REPO) to the remote host
+sync-cappp-repo:
+	$(call print-target)
+	# Perform initial sync
+	rsync $(CAPPP_RSYNC_OPTS)
+	# Watch for changes and sync
+	fswatch --one-per-batch --recursive --latency 1 $(CAPPP_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
 
 .PHONY: tunnel
 tunnel: ## Create SSH tunnel to the remote instance
