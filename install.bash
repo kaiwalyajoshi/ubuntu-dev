@@ -33,6 +33,7 @@ apt-get install -y \
   tig \
   vim-gtk3 \
   tree \
+  unison \
   zsh
 
 # Docker

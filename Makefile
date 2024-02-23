@@ -2,21 +2,11 @@
 .lDEFAULT_GOAL := help
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
-SOURCE_REPO := $(IR)
-PROJECTS_SOURCE_REPO := ${PR}
-CODE_REVIEWS_SOURCE_REPO := ${CR}
-AI_NAVIGATOR_SOURCE_REPO := ${HOME}/repositories/ai-navigator-cluster-info-agent
-KIB_SOURCE_REPO := ${HOME}/repositories/konvoy-image-builder
-CAPPP_SOURCE_REPO := ${HOME}/repositories/cluster-api-provider-preprovisioned
-
 EC2_INSTANCE_USER := ubuntu
 
 TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/go/src/github.com/mesosphere
 TARGET_REPO := $(TARGET_REPO_BASE)/dkp-insights
 MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
-
-PROJECTS_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/repositories
-CODE_REVIEWS_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/code-reviews
 
 TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
 
@@ -26,18 +16,9 @@ EC2_SSH_KEY := $(shell cat inventory | grep -E ".*\.pem" | cut -d "=" -f 2)
 endif
 
 SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
-
 SSH_TUNNEL_PORT := 1337
-RSYNC_OPTS_COMMON := -rav --exclude .idea --exclude .local --exclude artifacts --exclude dist --exclude pkg/generated -e "ssh $(SSH_OPTS)"
-RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(TARGET_REPO_BASE)
-PROJECTS_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(PROJECTS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
-CODE_REVIEWS_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(CODE_REVIEWS_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(CODE_REVIEWS_TARGET_REPO_BASE)
-AI_NAVIGATOR_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(AI_NAVIGATOR_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
-KIB_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(KIB_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
-CAPPP_RSYNC_OPTS := $(RSYNC_OPTS_COMMON) $(CAPPP_SOURCE_REPO) $(EC2_INSTANCE_USER)@$(EC2_INSTANCE_HOST):$(PROJECTS_TARGET_REPO_BASE)
 
 PORT_FORWARD ?= 8888
-
 POSTGRES_PORT_FORWARD ?= 5432
 API_PORT_FORWARD ?= 8090
 
@@ -49,59 +30,10 @@ define print-target
 		@printf "Executing target: \033[36m$@\033[0m\n"
 endef
 
-.PHONY: sync-repo
-sync-repo: ## Start one-way synchronization of the $(SOURCE_REPO) to the remote host
-sync-repo:
-	$(call print-target)
-	# Perform initial sync
-	rsync $(RSYNC_OPTS)
-	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(SOURCE_REPO) | xargs -I{} rsync $(RSYNC_OPTS)
-
-.PHONY: sync-review-repo
-sync-review-repo: ## Start one-way synchronization of the $(CODE_REVIEWS_SOURCE_REPO) to the remote host
-sync-review-repo:
-	$(call print-target)
-	# Perform initial sync
-	rsync $(CODE_REVIEWS_RSYNC_OPTS)
-	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(CODE_REVIEWS_SOURCE_REPO) | xargs -I{} rsync $(CODE_REVIEWS_RSYNC_OPTS)
-
-.PHONY: sync-projects-repo
-sync-projects-repo: ## Start one-way synchronization of the $(CODE_REVIEWS_SOURCE_REPO) to the remote host
-sync-projects-repo:
-	$(call print-target)
-	# Perform initial sync
-	rsync $(PROJECTS_RSYNC_OPTS)
-	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(PROJECTS_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
-
-.PHONY: sync-ai-navigator-repo
-sync-ai-navigator-repo: ## Start one-way synchronization of the $(AI_NAVIGATOR_SOURCE_REPO) to the remote host
-sync-ai-navigator-repo:
-	$(call print-target)
-	# Perform initial sync
-	rsync $(AI_NAVIGATOR_RSYNC_OPTS)
-	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(AI_NAVIGATOR_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
-
-.PHONY: sync-kib-repo
-sync-kib-repo: ## Start one-way synchronization of the $(KIB_SOURCE_REPO) to the remote host
-sync-kib-repo:
-	$(call print-target)
-	# Perform initial sync
-	rsync $(KIB_RSYNC_OPTS)
-	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(KIB_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
-
-.PHONY: sync-cappp-repo
-sync-cappp-repo: ## Start one-way synchronization of the $(CAPPP_SOURCE_REPO) to the remote host
-sync-cappp-repo:
-	$(call print-target)
-	# Perform initial sync
-	rsync $(CAPPP_RSYNC_OPTS)
-	# Watch for changes and sync
-	fswatch --one-per-batch --recursive --latency 1 $(CAPPP_SOURCE_REPO) | xargs -I{} rsync $(PROJECTS_RSYNC_OPTS)
+## Rsync based sync routines (deprecated)
+#include $(ROOT_DIR)/make/rsync-sync.mk
+## Unison based sync routines
+include $(ROOT_DIR)/make/unison-sync.mk
 
 .PHONY: tunnel
 tunnel: ## Create SSH tunnel to the remote instance
@@ -186,5 +118,3 @@ populate-ssh-config: ## Generate and populate a ssh config in the current folder
 		SendEnv DOCKER_PASSWORD
 	EOF
 	echo "Ensure the following is added to ~/.ssh/config:Include $(ROOT_DIR)/ssh-config"
-
-
