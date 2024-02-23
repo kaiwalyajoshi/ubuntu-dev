@@ -1,5 +1,5 @@
 
-UNISON_OPTS_COMMON :=-batch -auto -watch -repeat 1 -ignore 'BelowPath .idea' -ignore 'BelowPath .local' -ignore 'BelowPath dist' -ignore 'BelowPath pkg/generated'
+UNISON_OPTS_COMMON :=-batch -auto -watch -repeat 5 -ignore 'BelowPath .idea' -ignore 'BelowPath .local' -ignore 'BelowPath dist' -ignore 'BelowPath pkg/generated'
 
 REPOSITORIES_SOURCE_REPO_BASE := ${HOME}/repositories
 REPOSITORIES_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/repositories
