@@ -8,5 +8,5 @@ set -euo pipefail
 git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
 ln -s /home/ubuntu/SpaceVim.d/.SpaceVim.d /home/ubuntu/.SpaceVim.d
 
-cd ~/go/src/github.com/mesosphere/
-git clone --recursive git@github.com:mesosphere/dkp-insights.git
+#cd ~/go/src/github.com/mesosphere/
+#git clone --recursive git@github.com:mesosphere/dkp-insights.git

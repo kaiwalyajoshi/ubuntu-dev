@@ -4,6 +4,8 @@ UNISON_OPTS_COMMON :=-batch -auto -watch -repeat 5 -ignore 'BelowPath .idea' -ig
 REPOSITORIES_SOURCE_REPO_BASE := ${HOME}/repositories
 REPOSITORIES_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/repositories
 
+SYNC_CUSTOM_REPO ?= /tmp/non-existing-default-repo
+
 .PHONY: unison-sync-repo
 unison-sync-repo: ## Sync main repo
 unison-sync-repo:
@@ -45,6 +47,24 @@ unison-konvoy-repo: ## Sync Konvoy Repo
 unison-konvoy-repo:
 	$(call print-target)
 	$(shell $(call invoke_unison,konvoy2))
+
+.PHONY: unison-cluster-api-provider-cloud-director-repo
+unison-cluster-api-provider-cloud-director-repo: ## Sync VSphere Base Template Repo
+unison-cluster-api-provider-cloud-director-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,cluster-api-provider-cloud-director))
+
+.PHONY: unison-forked-cluster-api-provider-cloud-director-repo
+unison-forked-cluster-api-provider-cloud-director-repo: ## Sync VSphere Base Template Repo
+unison-forked-cluster-api-provider-cloud-director-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,forked-repositories/cluster-api-provider-cloud-director))
+
+.PHONY: unison-custom-repo
+unison-custom-repo: ## Sync VSphere Base Template Repo
+unison-custom-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,forked-repositories/cluster-api-provider-cloud-director))
 
 define invoke_unison
     $(eval $@_REPOSITORY_NAME = $(1))
