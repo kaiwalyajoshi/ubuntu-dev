@@ -33,9 +33,10 @@ alias m_k9s="KUBECONFIG=${MANAGEMENT_KUBECONFIG} k9s"
 alias m_dkp="KUBECONFIG=${MANAGEMENT_KUBECONFIG} dkp"
 alias b_dkp="KUBECONFIG=${BACKEND_KUBECONFIG} dkp"
 
-export PATH=/usr/local/go/bin:${PATH}
+export PATH=${GOROOT}/bin:${PATH}
 export PATH=${IR}/.local/tools:${PATH}
 export PATH=${GOPATH}/bin:${PATH}
+export PATH=${HOME}/bin:${PATH}
 
 # Code Reviews.
 mkdir -p ${HOME}/code-reviews

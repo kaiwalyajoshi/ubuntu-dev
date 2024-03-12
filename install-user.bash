@@ -23,6 +23,8 @@ cp -f /home/ubuntu/oh-my-zsh.bash /home/ubuntu/.zshrc
 
 # Everything below must be run after the git clones above
 
+mkdir -p /home/ubuntu/bin
+
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 
 # Generate .gitconfig, modify these as needed.
