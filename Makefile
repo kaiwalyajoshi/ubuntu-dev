@@ -2,7 +2,14 @@
 .lDEFAULT_GOAL := help
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
+
+ifneq ("$(wildcard $(CURDIR)/ssh-config)","")
+SYNC_HOST=insights-dev-box
 EC2_INSTANCE_USER := ubuntu
+else
+SYNC_HOST=t580
+EC2_INSTANCE_USER := kjoshi
+endif
 
 TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/go/src/github.com/mesosphere
 TARGET_REPO := $(TARGET_REPO_BASE)/dkp-insights
@@ -14,6 +21,7 @@ ifneq ("$(wildcard $(CURDIR)/inventory)","")
 EC2_INSTANCE_HOST := $(strip $(shell cat inventory | grep -E "(.*)amazonaws\.com"))
 EC2_SSH_KEY := $(shell cat inventory | grep -E ".*\.pem" | cut -d "=" -f 2)
 endif
+
 
 SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 SSH_TUNNEL_PORT := 1337
@@ -116,5 +124,10 @@ populate-ssh-config: ## Generate and populate a ssh config in the current folder
 		SendEnv GITHUB_TOKEN
 		SendEnv DOCKER_USERNAME
 		SendEnv DOCKER_PASSWORD
+		SendEnv PROVIDER_ADMIN_USER
+		SendEnv PROVIDER_ADMIN_PASSWORD
+		SendEnv TEST_E2E_PRIVATE_KEY
+		SendEnv TEST_E2E_PUBLIC_KEY
+		SendEnv VCD_REFRESH_TOKEN
 	EOF
 	echo "Ensure the following is added to ~/.ssh/config:Include $(ROOT_DIR)/ssh-config"

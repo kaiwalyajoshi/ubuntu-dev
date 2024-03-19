@@ -54,6 +54,8 @@ export USE_KIND_CLUSTERS=true
 export INSIGHTS_NAMESPACE=kommander
 export SKIP_AWS_CREDENTIALS=true
 
+export SSH_BASTION_PUBLIC_KEY_FILE=${HOME}/.ssh/test-e2e.public
+
 git config --global user.name "${GIT_NAME}"
 git config --global user.email "${GIT_EMAIL}"
 git config --global user.signingkey "${GIT_SIGNING_KEY}"

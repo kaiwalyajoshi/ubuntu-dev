@@ -26,6 +26,7 @@ apt-get install -y \
   fio \
   sysstat \
   strace \
+  sshuttle \
   xdg-utils \
   jq \
   fzf \
@@ -69,14 +70,24 @@ mv ./kubectl /usr/local/bin/kubectl
 # sudo mv ./kind /usr/local/bin/kind
 
 # GoLang
-wget https://dl.google.com/go/go1.20.7.linux-amd64.tar.gz
-sudo tar -C /usr/local/ -xzf go1.20.7.linux-amd64.tar.gz
-rm go1.20.7.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.22.1.linux-amd64.tar.gz
+sudo tar -C /usr/local/ -xzf go1.22.1.linux-amd64.tar.gz
+rm go1.22.1.linux-amd64.tar.gz
 
 # Delta Pager for Git Diffs
 wget https://github.com/dandavison/delta/releases/download/0.16.5/git-delta-musl_0.16.5_amd64.deb
 sudo dpkg -i git-delta-musl_0.16.5_amd64.deb
 rm git-delta-musl_0.16.5_amd64.deb
+
+# Pre-Commit and NodeJS (for some reason).
+apt-get install -y \
+    nodejs \
+    npm \
+    python3
+
+# Add pip and pre-commit
+pip install --upgrade pip
+pip install pre-commit
 
 # # Helm
 # curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -118,6 +129,11 @@ sysctl fs.inotify.max_user_instances=512
 #   SendEnv GITHUB_TOKEN
 #   SendEnv DOCKER_USERNAME
 #   SendEnv DOCKER_PASSWORD
+#   SendEnv PROVIDER_ADMIN_USER
+#   SendEnv PROVIDER_ADMIN_PASSWORD
+#   SendEnv TEST_E2E_PRIVATE_KEY
+#   SendEnv TEST_E2E_PUBLIC_KEY
+#   SendEnv VCD_REFRESH_TOKEN
 echo "AcceptEnv GIT_NAME" >> /etc/ssh/sshd_config
 echo "AcceptEnv GIT_EMAIL" >> /etc/ssh/sshd_config
 echo "AcceptEnv GIT_SIGNING_KEY" >> /etc/ssh/sshd_config
@@ -125,6 +141,11 @@ echo "AcceptEnv GITHUB_USERNAME" >> /etc/ssh/sshd_config
 echo "AcceptEnv GITHUB_TOKEN" >> /etc/ssh/sshd_config
 echo "AcceptEnv DOCKER_USERNAME" >> /etc/ssh/sshd_config
 echo "AcceptEnv DOCKER_PASSWORD" >> /etc/ssh/sshd_config
+echo "AcceptEnv PROVIDER_ADMIN_USER" >> /etc/ssh/sshd_config
+echo "AcceptEnv PROVIDER_ADMIN_PASSWORD" >> /etc/ssh/sshd_config
+echo "AcceptEnv TEST_E2E_PRIVATE_KEY" >> /etc/ssh/sshd_config
+echo "AcceptEnv TEST_E2E_PUBLIC_KEY" >> /etc/ssh/sshd_config
+echo "AcceptEnv VCD_REFRESH_TOKEN" >> /etc/ssh/sshd_config
 
 # Change user shell to zsh
 chsh -s /usr/bin/zsh ubuntu

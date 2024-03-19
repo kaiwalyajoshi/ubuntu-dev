@@ -10,13 +10,13 @@ SYNC_CUSTOM_REPO ?= /tmp/non-existing-default-repo
 unison-sync-repo: ## Sync main repo
 unison-sync-repo:
 	$(call print-target)
-		unison "${IR}" "ssh://insights-dev-box/${TARGET_REPO}" -prefer "${IR}" $(UNISON_OPTS_COMMON)
+		unison "${IR}" "ssh://${SYNC_HOST}/${TARGET_REPO}" -prefer "${IR}" $(UNISON_OPTS_COMMON)
 
 .PHONY: unison-reviews-repo
 unison-reviews-repo: ## Sync reviews repo
 unison-reviews-repo:
 	$(call print-target)
-		unison "${CR}" "ssh://insights-dev-box//home/$(EC2_INSTANCE_USER)/code-reviews/dkp-insights" -prefer "${CR}" $(UNISON_OPTS_COMMON)
+		unison "${CR}" "ssh://${SYNC_HOST}//home/$(EC2_INSTANCE_USER)/code-reviews/dkp-insights" -prefer "${CR}" $(UNISON_OPTS_COMMON)
 
 .PHONY: unison-projects-repo
 unison-projects-repo: ## Sync projects repo
@@ -68,5 +68,5 @@ unison-custom-repo:
 
 define invoke_unison
     $(eval $@_REPOSITORY_NAME = $(1))
-		echo "unison "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" "ssh://insights-dev-box/${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}" -prefer "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" $(UNISON_OPTS_COMMON)"
+		echo "unison "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" "ssh://${SYNC_HOST}/${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}" -prefer "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" $(UNISON_OPTS_COMMON)"
 endef
