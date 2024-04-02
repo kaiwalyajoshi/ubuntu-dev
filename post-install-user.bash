@@ -40,9 +40,9 @@ tam config set url https://tam.production.d2iq.cloud
 
 # Echo out public key
 mkdir -p ${HOME}/.ssh
-echo -E ${GIT_SIGNING_KEY} > ${HOME}/.ssh/id_ed25519.pub
-echo -E ${TEST_E2E_PRIVATE_KEY} > ${HOME}/.ssh/test-e2e.private
-echo -E ${TEST_E2E_PUBLIC_KEY} > ${HOME}/.ssh/test-e2e.public
+echo ${GIT_SIGNING_KEY} > ${HOME}/.ssh/id_ed25519.pub
+echo ${TEST_E2E_PRIVATE_KEY} | base64 -d > ${HOME}/.ssh/test-e2e.private
+echo ${TEST_E2E_PUBLIC_KEY} | base64 -d > ${HOME}/.ssh/test-e2e.public
 
 chmod -R og-rwx ${HOME}/.ssh/*
 

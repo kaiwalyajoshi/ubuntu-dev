@@ -4,6 +4,9 @@ UNISON_OPTS_COMMON :=-batch -auto -watch -repeat 5 -ignore 'BelowPath .idea' -ig
 REPOSITORIES_SOURCE_REPO_BASE := ${HOME}/repositories
 REPOSITORIES_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/repositories
 
+NUTANIX_SOURCE_BASE=${HOME}/nutanix
+NUTANIX_TARGET_BASE=/home/$(EC2_INSTANCE_USER)/nutanix
+
 SYNC_CUSTOM_REPO ?= /tmp/non-existing-default-repo
 
 .PHONY: unison-sync-repo
@@ -61,10 +64,22 @@ unison-forked-cluster-api-provider-cloud-director-repo:
 	$(shell $(call invoke_unison,forked-repositories/cluster-api-provider-cloud-director))
 
 .PHONY: unison-custom-repo
-unison-custom-repo: ## Sync VSphere Base Template Repo
+unison-custom-repo:  ## Sync repos directory
 unison-custom-repo:
 	$(call print-target)
-	$(shell $(call invoke_unison,forked-repositories/cluster-api-provider-cloud-director))
+	$(shell $(call invoke_unison,$(SYNC_CUSTOM_REPO)))
+
+.PHONY: unison-repositories-directory
+unison-repositories-directory:  ## Sync entire repos directory
+unison-repositories-directory:
+	$(call print-target)
+	$(shell $(call invoke_unison,""))
+
+.PHONY: unison-nutanix-directory
+unison-nutanix-directory:  ## Sync entire nutanix directory
+unison-nutanix-directory:
+	$(call print-target)
+	$(shell unison "${NUTANIX_SOURCE_BASE}/" "ssh://${SYNC_HOST}/${NUTANIX_TARGET_BASE}/" -prefer "${NUTANIX_SOURCE_BASE}/" $(UNISON_OPTS_COMMON))
 
 define invoke_unison
     $(eval $@_REPOSITORY_NAME = $(1))

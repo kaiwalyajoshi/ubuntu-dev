@@ -3,27 +3,25 @@
 
 ROOT_DIR ?= $(shell git rev-parse --show-toplevel)
 
-ifneq ("$(wildcard $(CURDIR)/ssh-config)","")
+TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
+
+ifneq ("$(wildcard $(CURDIR)/inventory)","")
 SYNC_HOST=insights-dev-box
 EC2_INSTANCE_USER := ubuntu
+EC2_INSTANCE_HOST := $(strip $(shell cat inventory | grep -E "(.*)amazonaws\.com"))
+EC2_SSH_KEY := $(shell cat inventory | grep -E ".*\.pem" | cut -d "=" -f 2)
 else
-SYNC_HOST=t580
+SYNC_HOST=P16s.local
 EC2_INSTANCE_USER := kjoshi
+EC2_INSTANCE_HOST := P16s.local
+EC2_SSH_KEY := ~/.ssh/id_ed25519
 endif
 
 TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/go/src/github.com/mesosphere
 TARGET_REPO := $(TARGET_REPO_BASE)/dkp-insights
 MANAGEMENT_KUBECONFIG := $(TARGET_REPO)/artifacts/management.kubeconfig
 
-TERRAFORM_OPTS := -var owner=$(shell whoami) -auto-approve
-
-ifneq ("$(wildcard $(CURDIR)/inventory)","")
-EC2_INSTANCE_HOST := $(strip $(shell cat inventory | grep -E "(.*)amazonaws\.com"))
-EC2_SSH_KEY := $(shell cat inventory | grep -E ".*\.pem" | cut -d "=" -f 2)
-endif
-
-
-SSH_OPTS := -i $(ROOT_DIR)/$(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
+SSH_OPTS := -i $(EC2_SSH_KEY) -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30
 SSH_TUNNEL_PORT := 1337
 
 PORT_FORWARD ?= 8888
