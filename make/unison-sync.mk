@@ -9,6 +9,8 @@ NUTANIX_TARGET_BASE=/home/$(EC2_INSTANCE_USER)/nutanix
 
 SYNC_CUSTOM_REPO ?= /tmp/non-existing-default-repo
 
+PREFER_HOST=-prefer "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}"
+
 .PHONY: unison-sync-repo
 unison-sync-repo: ## Sync main repo
 unison-sync-repo:
@@ -83,5 +85,5 @@ unison-nutanix-directory:
 
 define invoke_unison
     $(eval $@_REPOSITORY_NAME = $(1))
-		echo "unison "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" "ssh://${SYNC_HOST}/${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}" -prefer "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" $(UNISON_OPTS_COMMON)"
+		echo "unison "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" "ssh://${SYNC_HOST}/${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}"  $(UNISON_OPTS_COMMON)"
 endef

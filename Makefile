@@ -11,9 +11,9 @@ EC2_INSTANCE_USER := ubuntu
 EC2_INSTANCE_HOST := $(strip $(shell cat inventory | grep -E "(.*)amazonaws\.com"))
 EC2_SSH_KEY := $(shell cat inventory | grep -E ".*\.pem" | cut -d "=" -f 2)
 else
-SYNC_HOST=P16s.local
+SYNC_HOST=p16s.local
 EC2_INSTANCE_USER := kjoshi
-EC2_INSTANCE_HOST := P16s.local
+EC2_INSTANCE_HOST := p16s.local
 EC2_SSH_KEY := ~/.ssh/id_ed25519
 endif
 
