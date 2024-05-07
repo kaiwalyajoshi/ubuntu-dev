@@ -48,5 +48,5 @@ chmod -R og-rwx ${HOME}/.ssh/*
 
 ssh-add ${HOME}/.ssh/test-e2e.private
 
-#cd ~/go/src/github.com/mesosphere/
-#git clone --recursive git@github.com:mesosphere/dkp-insights.git
+cd ~/go/src/github.com/mesosphere/
+git clone --recursive git@github.com:mesosphere/dkp-insights.git
