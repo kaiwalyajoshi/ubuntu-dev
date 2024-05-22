@@ -65,6 +65,30 @@ unison-forked-cluster-api-provider-cloud-director-repo:
 	$(call print-target)
 	$(shell $(call invoke_unison,forked-repositories/cluster-api-provider-cloud-director))
 
+.PHONY: unison-kommander-repo
+unison-kommander-repo: ## Sync Kommander Repo
+unison-kommander-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,kommander))
+
+.PHONY: unison-kommander-applications-repo
+unison-kommander-applications-repo: ## Sync Kommander-Applications Repo
+unison-kommander-applications-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,kommander-applications))
+
+.PHONY: unison-dkp-catalog-applications-repo
+unison-dkp-catalog-applications-repo: ## Sync DKP Catalogr-Applications Repo
+unison-dkp-catalog-applications-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,dkp-catalog-applications))
+
+.PHONY: unison-kommander-e2e-repo
+unison-kommander-e2e-repo: ## Sync Kommander E2E Repo
+unison-kommander-e2e-repo:
+	$(call print-target)
+	$(shell $(call invoke_unison,kommander-e2e))
+
 .PHONY: unison-custom-repo
 unison-custom-repo:  ## Sync repos directory
 unison-custom-repo:
