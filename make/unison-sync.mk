@@ -1,5 +1,4 @@
-
-UNISON_OPTS_COMMON :=-batch -auto -watch -repeat 30 -ignore 'BelowPath .idea' -ignore 'BelowPath .local' -ignore 'BelowPath dist' -ignore 'BelowPath pkg/generated'
+UNISON_OPTS_COMMON :=-ui text -batch -auto -watch -repeat 5 -ignore 'BelowPath .idea' -ignore 'BelowPath .local' -ignore 'BelowPath dist' -ignore 'BelowPath pkg/generated'
 
 REPOSITORIES_SOURCE_REPO_BASE := ${HOME}/repositories
 REPOSITORIES_TARGET_REPO_BASE := /home/$(EC2_INSTANCE_USER)/repositories
@@ -9,7 +8,8 @@ NUTANIX_TARGET_BASE=/home/$(EC2_INSTANCE_USER)/nutanix
 
 SYNC_CUSTOM_REPO ?= /tmp/non-existing-default-repo
 
-PREFER_HOST=-prefer "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}"
+#PREFER_HOST=-prefer "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}"
+PREFER_HOST=-prefer "${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}"
 
 .PHONY: unison-sync-repo
 unison-sync-repo: ## Sync main repo
@@ -105,9 +105,9 @@ unison-repositories-directory:
 unison-nutanix-directory:  ## Sync entire nutanix directory
 unison-nutanix-directory:
 	$(call print-target)
-	$(shell unison "${NUTANIX_SOURCE_BASE}/" "ssh://${SYNC_HOST}/${NUTANIX_TARGET_BASE}/" -prefer "${NUTANIX_SOURCE_BASE}/" $(UNISON_OPTS_COMMON))
+	$(shell unison "${NUTANIX_SOURCE_BASE}/" "ssh://${SYNC_HOST}/${NUTANIX_TARGET_BASE}/" $(PREFER_HOST) $(UNISON_OPTS_COMMON))
 
 define invoke_unison
     $(eval $@_REPOSITORY_NAME = $(1))
-		echo "unison "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" "ssh://${SYNC_HOST}/${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}"  $(UNISON_OPTS_COMMON)"
+		echo "unison-2.53 "${REPOSITORIES_SOURCE_REPO_BASE}/${$@_REPOSITORY_NAME}" "ssh://${SYNC_HOST}/${REPOSITORIES_TARGET_REPO_BASE}/${$@_REPOSITORY_NAME}"  $(UNISON_OPTS_COMMON)"
 endef
