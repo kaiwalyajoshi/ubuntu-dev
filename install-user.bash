@@ -1,11 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+# Override this user as needed.
+USER=${USER:-"ubuntu"}
+
 # User configuration scripts, not to be run as root.
 
 # Must be run before git clones below.
 # Add saner defaults for github.com based repos.
-cat >/home/ubuntu/.ssh/config<<EOF
+cat >"/home/${USER}/.ssh/config"<<EOF
 Host github.com
      StrictHostKeyChecking accept-new
 EOF
@@ -13,22 +16,18 @@ EOF
 # Optional: Install SpaceVim
 curl -sLf https://spacevim.org/install.sh | bash
 
-# Optional: Install Oh-My-Bash
-#bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended
-#cp /home/ubuntu/oh-my-bash.bash /home/ubuntu/.bashrc
-
 # Optional: Install Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-cp -f /home/ubuntu/oh-my-zsh.bash /home/ubuntu/.zshrc
+cp -f "/home/${USER}/oh-my-zsh.bash" "/home/${USER}/.zshrc"
 
 # Everything below must be run after the git clones above
 
-mkdir -p /home/ubuntu/bin
+mkdir -p "/home/${USER}/bin"
 
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 
 # Generate .gitconfig, modify these as needed.
-cat >/home/ubuntu/.gitconfig<<EOF
+cat >"/home/${USER}/.gitconfig"<<EOF
 [user]
   editor = vim
   pager = delta
@@ -65,7 +64,7 @@ cat >/home/ubuntu/.gitconfig<<EOF
 EOF
 
 # Generate .tigrc, modify these as needed.
-cat >/home/ubuntu/.tigrc<<EOF
+cat >"/home/${USER}/.tigrc"<<EOF
 # tig settings
 set main-view-date = custom
 set main-view-date-format = "%Y-%m-%d"
@@ -172,6 +171,5 @@ color palette-10	            	172	        default
 color palette-11	            	132	        default
 color palette-12	            	72	        default
 color palette-13	            	106	        default
-
 EOF
 

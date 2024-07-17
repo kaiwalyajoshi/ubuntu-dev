@@ -15,46 +15,65 @@ alias gti='git'
 alias mkae='make'
 alias cls='tput reset'
 
-export GOROOT=/usr/local/go
+#export GOROOT=/usr/local/go
+export GOROOT=$(dirname $(dirname $(asdf which go)));
 export GOPATH="$HOME/go"
 export GO111MODULE=auto
-export IR=${GOPATH}/src/github.com/mesosphere/dkp-insights
-export RP=${GOPATH}/src/github.com/mesosphere/dkp-insights-replay
+
+# Code Reviews.
+mkdir -p ${HOME}/code-reviews
+# Pull Requests.
+mkdir -p ${HOME}/repositories
+
+export FR=${HOME}/repositories/forked-repositories
+export RP=${HOME}/repositories/dkp-insights-replay
+export KD=${HOME}/repositories/kommander
+
+# DKP-Insights Related repositories.
+export FIR=${HOME}/repositories/forked-repositories/dkp-insights
+export CR=${HOME}/code-reviews/dkp-insights
+export PR=${GOPATH}/src/github.com/mesosphere/dkp-insights
+export IR=${HOME}/repositories/dkp-insights
+export PATH=${IR}/.local/tools:${PATH}
+
+export DEV_BOX=${FR}/ubuntu-dev
 
 export BACKEND_KUBECONFIG=${IR}/artifacts/backend.kubeconfig
 export MANAGEMENT_KUBECONFIG=${IR}/artifacts/management.kubeconfig
+export DAILY_KUBECONFIG=${HOME}/repositories/daily-cluster/dkp-daily.conf
+export SOAK_KUBECONFIG=${HOME}/repositories/soak-cluster/soak-cluster.conf
+export KOMMANDER_TEST_KUBECONFIG=${KD}/kubeconfig-kommander-testing
 
 alias b_k="KUBECONFIG=${BACKEND_KUBECONFIG} kubectl"
 alias m_k="KUBECONFIG=${MANAGEMENT_KUBECONFIG} kubectl"
+alias d_k="KUBECONFIG=${DAILY_KUBECONFIG} kubectl"
+alias s_k="KUBECONFIG=${SOAK_KUBECONFIG} kubectl"
+alias k_k="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} kubectl"
 
 alias b_k9s="KUBECONFIG=${BACKEND_KUBECONFIG} k9s"
 alias m_k9s="KUBECONFIG=${MANAGEMENT_KUBECONFIG} k9s"
+alias d_k9s="KUBECONFIG=${DAILY_KUBECONFIG} k9s"
+alias s_k9s="KUBECONFIG=${SOAK_KUBECONFIG} k9s"
+alias k_k9s="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} k9s"
 
 alias m_dkp="KUBECONFIG=${MANAGEMENT_KUBECONFIG} dkp"
 alias b_dkp="KUBECONFIG=${BACKEND_KUBECONFIG} dkp"
+alias d_dkp="KUBECONFIG=${DAILY_KUBECONFIG} dkp"
+alias s_dkp="KUBECONFIG=${SOAK_KUBECONFIG} dkp"
+alias k_dkp="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} dkp"
+
+# Use the build Make 4.3
+export PATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/bin:${PATH}
+export MANPATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/share/man/man1:`manpath`
 
 export PATH=${GOROOT}/bin:${PATH}
 export PATH=${IR}/.local/tools:${PATH}
 export PATH=${GOPATH}/bin:${PATH}
 export PATH=${HOME}/bin:${PATH}
 
-# Code Reviews.
-mkdir -p ${HOME}/code-reviews
-export CR=${HOME}/code-reviews/dkp-insights
-
-# Pull Requests.
-mkdir -p ${HOME}/repositories
-export PR=${HOME}/repositories/dkp-insights
-
 # dkp-insights variables (optionals)
 export TAG_OWNER=$(whoami)
 export TAG_EXPIRATION=24h
-
-export USE_KIND_CLUSTERS=true
-export INSIGHTS_NAMESPACE=kommander
-export SKIP_AWS_CREDENTIALS=true
-
-export SSH_BASTION_PUBLIC_KEY_FILE=${HOME}/.ssh/test-e2e.public
 
 git config --global user.name "${GIT_NAME}"
 git config --global user.email "${GIT_EMAIL}"

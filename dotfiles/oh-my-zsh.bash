@@ -69,7 +69,7 @@ ZSH_THEME="agnoster"
 
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 
-source /home/ubuntu/user-profile.bash
+source ${HOME}/user-profile.bash
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/

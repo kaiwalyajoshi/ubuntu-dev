@@ -4,49 +4,60 @@ set -euo pipefail
 # User configuration scripts, not to be run as root.
 # Should be run after installation.
 
-# Optional: Install addtional settings for SpackeVim (kjoshi specific)
-git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
-ln -s /home/ubuntu/SpaceVim.d/.SpaceVim.d /home/ubuntu/.SpaceVim.d
+echo "Configure SpaceVim"
+if [[ ! -d "/home/${HOME}/.SpaceVim.d" ]]; then
+  # Optional: Install addtional settings for SpaceVim (kjoshi specific)
+  git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
+  ln -s /home/${HOME}/SpaceVim.d/.SpaceVim.d /home/${HOME}/.SpaceVim.d
+fi
+
+echo "Configure ASDF"
+# Check if asdf exists
+if [[ ! -d "${HOME}/.asdf" ]]; then
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+  set +e
+  grep -q 'asdf.sh' "${HOME}/.zshrc"
+  if [[ $? -ne 0 ]]; then
+    echo ". ${HOME}/.asdf/asdf.sh" >> "${HOME}/.zshrc"
+  fi
+  set -e
+fi
+
+# Check if GNU Make 4.3 exists
+echo "Configure GNU Make 4.3"
+if [[ ! -x "${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/bin/make" ]]; then
+  INSTALL_ROOT=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)
+  mkdir -p "${INSTALL_ROOT}"
+  pushd "${INSTALL_ROOT}"
+    wget https://ftp.gnu.org/gnu/make/make-4.3.tar.gz
+    tar -xvf make-4.3.tar.gz
+    pushd make-4.3
+      export INSTALL_PREFIX="${INSTALL_ROOT}/gnumake-4.3"
+      mkdir -p ${INSTALL_PREFIX}
+      ./configure --prefix=${INSTALL_PREFIX}
+      make
+      make install
+    popd
+  popd
+fi
+
+echo "Configure Oh-My-Zsh"
+# Check if asdf exists
+if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+fi
 
 # Create bin dir
 mkdir -p ${HOME}/bin
 
-# Add KinD binary
-curl -fsSL https://github.com/kubernetes-sigs/kind/releases/download/v0.22.0/kind-linux-amd64 -o ${HOME}/bin/kind
-chmod ug+rx ${HOME}/bin/kind
-
-# Add gh binary
-curl -fsSL https://github.com/cli/cli/releases/download/v2.45.0/gh_2.45.0_linux_amd64.tar.gz | tar xz -C ${HOME}/bin --strip-components 2 --wildcards gh_2.45.0_linux_amd64/bin/gh
-
-# Add TAM binary
-gh release download --repo mesosphere/tam-cli v0.1.1 -p tam-linux-amd64.tar.gz -O - | tar xz -C ${HOME}/bin --wildcards 'tam'
-
-# Add MAWS Binary
-gh release download --repo mesosphere/maws 1.0.1 -p maws-linux-amd64.tar.gz -O - | tar xz -C ${HOME}/bin  --wildcards 'maws'
-
 # Set MAWS Config
 maws config set url https://aws.production.d2iq.cloud
-
-# Add TAM-CLI Plugin
-pushd ${HOME}/repositories
-git clone --recursive git@github.com:mesosphere/vcenter-tools.git
-pushd vcenter-tools
-sudo install ./tam-plugins/tam-plugin-vsphere /usr/local/bin/tam-plugin-vsphere
-popd
-popd
-
-# Set TAM Config.
-tam config set url https://tam.production.d2iq.cloud
 
 # Echo out public key
 mkdir -p ${HOME}/.ssh
 echo ${GIT_SIGNING_KEY} > ${HOME}/.ssh/id_ed25519.pub
-echo ${TEST_E2E_PRIVATE_KEY} | base64 -d > ${HOME}/.ssh/test-e2e.private
-echo ${TEST_E2E_PUBLIC_KEY} | base64 -d > ${HOME}/.ssh/test-e2e.public
-
 chmod -R og-rwx ${HOME}/.ssh/*
 
-ssh-add ${HOME}/.ssh/test-e2e.private
-
-cd ~/go/src/github.com/mesosphere/
-git clone --recursive git@github.com:mesosphere/dkp-insights.git
+#cd ~/go/src/github.com/mesosphere/
+#git clone --recursive git@github.com:mesosphere/dkp-insights.git
