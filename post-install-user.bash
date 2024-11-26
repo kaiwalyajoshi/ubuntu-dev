@@ -3,14 +3,15 @@ set -euo pipefail
 
 # User configuration scripts, not to be run as root.
 # Should be run after installation.
+pushd ${HOME}
 
 echo "Configure SpaceVim"
-if [[ ! -d "/home/${HOME}/.SpaceVim.d" ]]; then
-  # Optional: Install addtional settings for SpaceVim (kjoshi specific)
-  git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
-  ln -s /home/${HOME}/SpaceVim.d/.SpaceVim.d /home/${HOME}/.SpaceVim.d
-fi
-
+# if [[ ! -d "/home/${HOME}/.SpaceVim.d" ]]; then
+  ## Optional: Install addtional settings for SpaceVim (kjoshi specific)
+  # git clone --recursive https://github.com/kaiwalyajoshi/SpaceVim.d.git
+  # ln -s ${HOME}/SpaceVim.d/.SpaceVim.d ${HOME}/.SpaceVim.d
+# fi
+#
 echo "Configure ASDF"
 # Check if asdf exists
 if [[ ! -d "${HOME}/.asdf" ]]; then
@@ -52,7 +53,7 @@ fi
 mkdir -p ${HOME}/bin
 
 # Set MAWS Config
-maws config set url https://aws.production.d2iq.cloud
+#maws config set url https://aws.production.d2iq.cloud
 
 # Echo out public key
 mkdir -p ${HOME}/.ssh
@@ -61,3 +62,5 @@ chmod -R og-rwx ${HOME}/.ssh/*
 
 #cd ~/go/src/github.com/mesosphere/
 #git clone --recursive git@github.com:mesosphere/dkp-insights.git
+
+popd

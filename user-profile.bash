@@ -14,9 +14,10 @@ alias gut='git'
 alias gti='git'
 alias mkae='make'
 alias cls='tput reset'
+#alias vim='nvim'
 
 #export GOROOT=/usr/local/go
-export GOROOT=$(dirname $(dirname $(asdf which go)));
+export GOROOT=$(dirname $(dirname $(asdf which go)))
 export GOPATH="$HOME/go"
 export GO111MODULE=auto
 
@@ -28,6 +29,7 @@ mkdir -p ${HOME}/repositories
 export FR=${HOME}/repositories/forked-repositories
 export RP=${HOME}/repositories/dkp-insights-replay
 export KD=${HOME}/repositories/kommander
+export NR=${HOME}/repositories/nkp-pulse
 
 # DKP-Insights Related repositories.
 export FIR=${HOME}/repositories/forked-repositories/dkp-insights
@@ -62,14 +64,21 @@ alias d_dkp="KUBECONFIG=${DAILY_KUBECONFIG} dkp"
 alias s_dkp="KUBECONFIG=${SOAK_KUBECONFIG} dkp"
 alias k_dkp="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} dkp"
 
+alias ag='ag --hidden --color-path="1;1;36" --color-match="30;45"'
+
 # Use the build Make 4.3
 export PATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/bin:${PATH}
-export MANPATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/share/man/man1:`manpath`
+export MANPATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/share/man/man1:$(manpath)
 
 export PATH=${GOROOT}/bin:${PATH}
 export PATH=${IR}/.local/tools:${PATH}
 export PATH=${GOPATH}/bin:${PATH}
 export PATH=${HOME}/bin:${PATH}
+export PATH=${HOME}/dev_tools/neovim/nvim-linux64/bin:${PATH}
+export PATH=${HOME}/dev_tools/diskonaut:${PATH}
+export PATH=${HOME}/dev_tools/dive:${PATH}
+export PATH=${HOME}/dev_tools/devbox:${PATH}
+export PATH=${HOME}/.tam-plugins/bin:${PATH}
 
 # dkp-insights variables (optionals)
 export TAG_OWNER=$(whoami)
@@ -78,4 +87,3 @@ export TAG_EXPIRATION=24h
 git config --global user.name "${GIT_NAME}"
 git config --global user.email "${GIT_EMAIL}"
 git config --global user.signingkey "${GIT_SIGNING_KEY}"
-

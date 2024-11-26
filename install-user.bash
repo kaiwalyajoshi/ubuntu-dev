@@ -18,7 +18,7 @@ curl -sLf https://spacevim.org/install.sh | bash
 
 # Optional: Install Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-cp -f "/home/${USER}/oh-my-zsh.bash" "/home/${USER}/.zshrc"
+cp -f "dotfiles/oh-my-zsh.bash" "/home/${USER}/.zshrc"
 
 # Everything below must be run after the git clones above
 

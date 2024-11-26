@@ -77,13 +77,13 @@ pip install --upgrade pip
 pip install pre-commit
 
 mkdir -p "/home/${USER}/go/src/github.com/mesosphere"
-chown -R "${USER}:${USER}" go
+chown -R "${USER}:${USER}" "/home/${USER}/go"
 
 mkdir -p "/home/${USER}/code-reviews"
-chown -R "${USER}:${USER}" code-reviews
+chown -R "${USER}:${USER}" "/home/${USER}/code-reviews"
 
 mkdir -p "/home/${USER}/repositories"
-chown -R "${USER}:${USER}" repositories
+chown -R "${USER}:${USER}" "/home/${USER}/repositories"
 
 # Fix pod errors due to “too many open files” (https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files)
 sysctl fs.inotify.max_user_watches=524288
