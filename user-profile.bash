@@ -14,11 +14,13 @@ alias gut='git'
 alias gti='git'
 alias mkae='make'
 alias cls='tput reset'
-#alias vim='nvim'
+alias vim='nvim'
 
 #export GOROOT=/usr/local/go
-export GOROOT=$(dirname $(dirname $(asdf which go)))
-export GOPATH="$HOME/go"
+#export GOROOT=$(dirname $(dirname $(asdf which go)))
+#export GOROOT=$(dirname $(dirname $(realpath ${HOME}/.devbox/nix/profile/default/bin/go)))
+export GOROOT="${HOME}"/goroot
+export GOPATH="${HOME}"/go
 export GO111MODULE=auto
 
 # Code Reviews.
@@ -37,6 +39,7 @@ export CR=${HOME}/code-reviews/dkp-insights
 export PR=${GOPATH}/src/github.com/mesosphere/dkp-insights
 export IR=${HOME}/repositories/dkp-insights
 export PATH=${IR}/.local/tools:${PATH}
+export NDS=${HOME}/repositories/ncn-dev-scripts
 
 export DEV_BOX=${FR}/ubuntu-dev
 
@@ -65,19 +68,20 @@ alias s_dkp="KUBECONFIG=${SOAK_KUBECONFIG} dkp"
 alias k_dkp="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} dkp"
 
 alias ag='ag --hidden --color-path="1;1;36" --color-match="30;45"'
+alias fzf='fzf --preview="bat -n --color always {}"'
 
 # Use the build Make 4.3
-export PATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/bin:${PATH}
-export MANPATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/share/man/man1:$(manpath)
+#export PATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/bin:${PATH}
+#export MANPATH=${HOME}/dev_tools/gnumake/$(uname -s)/$(uname -m)/gnumake-4.3/share/man/man1:$(manpath)
 
 export PATH=${GOROOT}/bin:${PATH}
 export PATH=${IR}/.local/tools:${PATH}
 export PATH=${GOPATH}/bin:${PATH}
 export PATH=${HOME}/bin:${PATH}
-export PATH=${HOME}/dev_tools/neovim/nvim-linux64/bin:${PATH}
-export PATH=${HOME}/dev_tools/diskonaut:${PATH}
-export PATH=${HOME}/dev_tools/dive:${PATH}
-export PATH=${HOME}/dev_tools/devbox:${PATH}
+#export PATH=${HOME}/dev_tools/neovim/nvim-linux64/bin:${PATH}
+#export PATH=${HOME}/dev_tools/diskonaut:${PATH}
+#export PATH=${HOME}/dev_tools/dive:${PATH}
+#export PATH=${HOME}/dev_tools/devbox:${PATH}
 export PATH=${HOME}/.tam-plugins/bin:${PATH}
 
 # dkp-insights variables (optionals)
@@ -87,3 +91,5 @@ export TAG_EXPIRATION=24h
 git config --global user.name "${GIT_NAME}"
 git config --global user.email "${GIT_EMAIL}"
 git config --global user.signingkey "${GIT_SIGNING_KEY}"
+
+bind 'set bell-style none'
