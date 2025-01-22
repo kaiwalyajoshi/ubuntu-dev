@@ -34,12 +34,11 @@ export KD=${HOME}/repositories/kommander
 export NR=${HOME}/repositories/nkp-pulse
 
 # DKP-Insights Related repositories.
-export FIR=${HOME}/repositories/forked-repositories/dkp-insights
-export CR=${HOME}/code-reviews/dkp-insights
-export PR=${GOPATH}/src/github.com/mesosphere/dkp-insights
+export CR=${HOME}/code-reviews
 export IR=${HOME}/repositories/dkp-insights
 export PATH=${IR}/.local/tools:${PATH}
 export NDS=${HOME}/repositories/ncn-dev-scripts
+export KCONFIG=${HOME}/cluster-kubeconfigs
 
 export DEV_BOX=${FR}/ubuntu-dev
 

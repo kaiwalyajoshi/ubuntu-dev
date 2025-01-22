@@ -42,16 +42,16 @@ apt-get install -y \
 
 # Docker
 apt-get install -y \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 
 apt-get update
 apt-get install -y \
@@ -68,9 +68,9 @@ rm git-delta-musl_0.16.5_amd64.deb
 
 # Pre-Commit and NodeJS (for some reason).
 apt-get install -y \
-    nodejs \
-    npm \
-    python3
+  nodejs \
+  npm \
+  python3
 
 # Add pip and pre-commit
 pip install --upgrade pip
@@ -90,18 +90,13 @@ sysctl fs.inotify.max_user_watches=524288
 sysctl fs.inotify.max_user_instances=512
 
 # NOTE: Add these to your local ~/.ssh/config, for this to work.
-echo "AcceptEnv GIT_NAME" >> /etc/ssh/sshd_config
-echo "AcceptEnv GIT_EMAIL" >> /etc/ssh/sshd_config
-echo "AcceptEnv GIT_SIGNING_KEY" >> /etc/ssh/sshd_config
-echo "AcceptEnv GITHUB_USERNAME" >> /etc/ssh/sshd_config
-echo "AcceptEnv GITHUB_TOKEN" >> /etc/ssh/sshd_config
-echo "AcceptEnv DOCKER_USERNAME" >> /etc/ssh/sshd_config
-echo "AcceptEnv DOCKER_PASSWORD" >> /etc/ssh/sshd_config
-echo "AcceptEnv PROVIDER_ADMIN_USER" >> /etc/ssh/sshd_config
-echo "AcceptEnv PROVIDER_ADMIN_PASSWORD" >> /etc/ssh/sshd_config
-echo "AcceptEnv TEST_E2E_PRIVATE_KEY" >> /etc/ssh/sshd_config
-echo "AcceptEnv TEST_E2E_PUBLIC_KEY" >> /etc/ssh/sshd_config
-echo "AcceptEnv VCD_REFRESH_TOKEN" >> /etc/ssh/sshd_config
+echo "AcceptEnv GIT_NAME" >>/etc/ssh/sshd_config
+echo "AcceptEnv GIT_EMAIL" >>/etc/ssh/sshd_config
+echo "AcceptEnv GIT_SIGNING_KEY" >>/etc/ssh/sshd_config
+echo "AcceptEnv GITHUB_USERNAME" >>/etc/ssh/sshd_config
+echo "AcceptEnv GITHUB_TOKEN" >>/etc/ssh/sshd_config
+echo "AcceptEnv DOCKER_USERNAME" >>/etc/ssh/sshd_config
+echo "AcceptEnv DOCKER_PASSWORD" >>/etc/ssh/sshd_config
 
 # Change user shell to zsh
 chsh -s /usr/bin/zsh "${USER}"
