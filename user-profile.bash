@@ -60,11 +60,13 @@ alias d_k9s="KUBECONFIG=${DAILY_KUBECONFIG} k9s"
 alias s_k9s="KUBECONFIG=${SOAK_KUBECONFIG} k9s"
 alias k_k9s="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} k9s"
 
-alias m_dkp="KUBECONFIG=${MANAGEMENT_KUBECONFIG} dkp"
-alias b_dkp="KUBECONFIG=${BACKEND_KUBECONFIG} dkp"
-alias d_dkp="KUBECONFIG=${DAILY_KUBECONFIG} dkp"
-alias s_dkp="KUBECONFIG=${SOAK_KUBECONFIG} dkp"
-alias k_dkp="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} dkp"
+alias m_nkp="KUBECONFIG=${MANAGEMENT_KUBECONFIG} nkp"
+alias b_nkp="KUBECONFIG=${BACKEND_KUBECONFIG} nkp"
+alias d_nkp="KUBECONFIG=${DAILY_KUBECONFIG} nkp"
+alias s_nkp="KUBECONFIG=${SOAK_KUBECONFIG} nkp"
+alias k_nkp="KUBECONFIG=${KOMMANDER_TEST_KUBECONFIG} nkp"
+
+alias dkp="nkp "
 
 alias ag='ag --hidden --color-path="1;1;36" --color-match="30;45"'
 alias fzf='fzf --preview="bat -n --color always {}"'

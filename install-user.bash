@@ -8,23 +8,23 @@ USER=${USER:-"ubuntu"}
 
 # Must be run before git clones below.
 # Add saner defaults for github.com based repos.
-cat >"/home/${USER}/.ssh/config"<<EOF
-Host github.com
-     StrictHostKeyChecking accept-new
-EOF
+#cat >"/home/${USER}/.ssh/config"<<EOF
+#Host github.com
+#     StrictHostKeyChecking accept-new
+#EOF
 
 # Optional: Install SpaceVim
-curl -sLf https://spacevim.org/install.sh | bash
+#curl -sLf https://spacevim.org/install.sh | bash
 
 # Optional: Install Oh-My-Zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-cp -f "dotfiles/oh-my-zsh.bash" "/home/${USER}/.zshrc"
+#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+#cp -f "dotfiles/oh-my-zsh.bash" "/home/${USER}/.zshrc"
 
 # Everything below must be run after the git clones above
 
-mkdir -p "/home/${USER}/bin"
+#mkdir -p "/home/${USER}/bin"
 
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
+#git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 
 # Generate .gitconfig, modify these as needed.
 cat >"/home/${USER}/.gitconfig"<<EOF
